@@ -5,7 +5,9 @@ import it.unibo.bank.api.BankAccount;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Assertions;
 
 public class TestStrictBankAccount {
 
@@ -20,7 +22,8 @@ public class TestStrictBankAccount {
      */
     @BeforeEach
     public void setUp() {
-        fail("To be implemented");
+        this.mRossi = new AccountHolder("Mario", "Rossi", 1);
+        this.bankAccount = new StrictBankAccount(mRossi, 0.0);
     }
 
     /**
@@ -28,7 +31,8 @@ public class TestStrictBankAccount {
      */
     @Test
     public void testInitialization() {
-        fail("To be implemented");
+        assertTrue(bankAccount.getBalance() == 0.0);
+        assertEquals(mRossi, bankAccount.getAccountHolder());
     }
 
     /**
@@ -36,7 +40,10 @@ public class TestStrictBankAccount {
      */
     @Test
     public void testManagementFees() {
-        fail("To be implemented");
+        final int user_id = mRossi.getUserID();
+        bankAccount.deposit(user_id, INITIAL_AMOUNT);
+        bankAccount.chargeManagementFees(user_id);
+        assertTrue(bankAccount.getBalance() < INITIAL_AMOUNT);
     }
 
     /**
@@ -44,7 +51,12 @@ public class TestStrictBankAccount {
      */
     @Test
     public void testNegativeWithdraw() {
-        fail("To be implemented");
+        try {
+            bankAccount.withdraw(mRossi.getUserID(), -INITIAL_AMOUNT);
+            Assertions.fail("Error not Throw!");
+        } catch (IllegalArgumentException e) {
+            assertEquals("Cannot withdraw a negative amount", e.getMessage());
+        }
     }
 
     /**
@@ -52,6 +64,11 @@ public class TestStrictBankAccount {
      */
     @Test
     public void testWithdrawingTooMuch() {
-        fail("To be implemented");
+        try {
+            bankAccount.withdraw(mRossi.getUserID(), INITIAL_AMOUNT * 100);
+            Assertions.fail("Error not Throw!");
+        } catch (IllegalArgumentException e) {
+            assertEquals("Insufficient balance", e.getMessage());
+        }
     }
 }
