@@ -40,10 +40,13 @@ public class TestStrictBankAccount {
      */
     @Test
     public void testManagementFees() {
+        assertEquals(0, bankAccount.getTransactionsCount());
         final int user_id = mRossi.getUserID();
         bankAccount.deposit(user_id, INITIAL_AMOUNT);
+        assertEquals(1, bankAccount.getTransactionsCount());
         bankAccount.chargeManagementFees(user_id);
         assertTrue(bankAccount.getBalance() < INITIAL_AMOUNT);
+        assertEquals(0, bankAccount.getTransactionsCount());
     }
 
     /**
